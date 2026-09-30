@@ -1,0 +1,2 @@
+Hello from the server!
+This is a sample file for the TCP practical.
