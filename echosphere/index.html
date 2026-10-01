@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0b10" />
+  <title>EchoSphere</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%237c5cff'/%3E%3Cpath d='M9 13c4-2 10-2 14 1M10 17c3-1.5 8-1.5 11 .8M11 21c2.4-1 5.6-1 8 .5' stroke='white' stroke-width='2.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="ambient" aria-hidden="true"></div>
+
+  <div id="app">
+    <aside id="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#/home">
+        <span class="brand-mark"></span>
+        <span>EchoSphere</span>
+      </a>
+      <nav class="nav">
+        <a href="#/home" data-nav="home"><i data-icon="home"></i><span>Home</span></a>
+        <a href="#/search" data-nav="search"><i data-icon="search"></i><span>Search</span></a>
+        <a href="#/library" data-nav="library"><i data-icon="library"></i><span>Your Library</span></a>
+        <a href="#/settings" data-nav="settings"><i data-icon="sliders"></i><span>Sound Lab</span></a>
+      </nav>
+      <div class="side-section">
+        <div class="side-head">
+          <span>Playlists</span>
+          <button class="icon-btn sm" id="newPlaylist" title="Create playlist"><i data-icon="plus"></i></button>
+        </div>
+        <div id="sidePlaylists" class="side-list"></div>
+      </div>
+      <button class="import-btn" id="importBtn"><i data-icon="upload"></i><span>Import music</span></button>
+      <input type="file" id="fileInput" accept="audio/*,.mp3,.wav,.ogg,.m4a,.flac,.opus" multiple hidden />
+    </aside>
+
+    <main id="main">
+      <header id="topbar">
+        <div class="history-btns">
+          <button class="icon-btn round" id="backBtn" title="Back"><i data-icon="chevron-left"></i></button>
+          <button class="icon-btn round" id="fwdBtn" title="Forward"><i data-icon="chevron-right"></i></button>
+        </div>
+        <label class="search-box" id="searchBox">
+          <i data-icon="search"></i>
+          <input id="searchInput" type="search" placeholder="What do you want to hear?" autocomplete="off" />
+          <kbd>/</kbd>
+        </label>
+        <button class="pill-btn ghost" id="paletteBtn" title="Command palette"><i data-icon="command"></i><span>Ctrl K</span></button>
+      </header>
+      <div id="view" tabindex="-1"></div>
+    </main>
+
+    <aside id="queuePanel" aria-label="Queue">
+      <div class="panel-head">
+        <h3>Queue</h3>
+        <button class="icon-btn sm" data-action="close-queue" title="Close"><i data-icon="x"></i></button>
+      </div>
+      <div id="queueBody"></div>
+    </aside>
+
+    <footer id="playerBar">
+      <div class="pb-left">
+        <button class="pb-cover" id="pbCover" title="Open Now Playing"><img alt="" /></button>
+        <div class="pb-meta">
+          <a class="pb-title" id="pbTitle"></a>
+          <a class="pb-artist" id="pbArtist"></a>
+        </div>
+        <button class="icon-btn like-btn" id="pbLike" title="Like"><i data-icon="heart"></i></button>
+      </div>
+      <div class="pb-center">
+        <div class="controls">
+          <button class="icon-btn" id="shuffleBtn" title="Smart shuffle (S)"><i data-icon="shuffle"></i></button>
+          <button class="icon-btn" id="prevBtn" title="Previous (Shift+←)"><i data-icon="prev"></i></button>
+          <button class="play-btn" id="playBtn" title="Play (Space)"><i data-icon="play"></i></button>
+          <button class="icon-btn" id="nextBtn" title="Next (Shift+→)"><i data-icon="next"></i></button>
+          <button class="icon-btn" id="repeatBtn" title="Repeat (R)"><i data-icon="repeat"></i></button>
+        </div>
+        <div class="progress-row">
+          <span class="time" id="timeCur">0:00</span>
+          <div class="slider progress" id="progress" role="slider" aria-label="Seek" tabindex="0">
+            <div class="track"><div class="buffer"></div><div class="fill"></div></div>
+            <div class="thumb"></div>
+            <div class="hover-tip"></div>
+          </div>
+          <span class="time" id="timeDur">0:00</span>
+        </div>
+      </div>
+      <div class="pb-right">
+        <button class="icon-btn" id="sleepBtn" title="Sleep timer"><i data-icon="moon"></i></button>
+        <button class="icon-btn" id="eqBtn" title="Sound Lab"><i data-icon="sliders"></i></button>
+        <button class="icon-btn" id="queueBtn" title="Queue (Q)"><i data-icon="queue"></i></button>
+        <button class="icon-btn" id="muteBtn" title="Mute (M)"><i data-icon="volume"></i></button>
+        <div class="slider volume" id="volume" role="slider" aria-label="Volume" tabindex="0">
+          <div class="track"><div class="fill"></div></div>
+          <div class="thumb"></div>
+        </div>
+        <button class="icon-btn" id="fullBtn" title="Immersive mode (F)"><i data-icon="expand"></i></button>
+      </div>
+      <div class="mini-progress"><div></div></div>
+    </footer>
+
+    <nav id="mobileNav">
+      <a href="#/home" data-nav="home"><i data-icon="home"></i><span>Home</span></a>
+      <a href="#/search" data-nav="search"><i data-icon="search"></i><span>Search</span></a>
+      <a href="#/library" data-nav="library"><i data-icon="library"></i><span>Library</span></a>
+      <a href="#/settings" data-nav="settings"><i data-icon="sliders"></i><span>Sound</span></a>
+    </nav>
+  </div>
+
+  <section id="nowPlaying" aria-label="Now playing" aria-hidden="true">
+    <div class="np-bg"></div>
+    <canvas class="np-viz" id="npViz"></canvas>
+    <header class="np-top">
+      <button class="icon-btn round" data-action="close-np" title="Close (Esc)"><i data-icon="chevron-down"></i></button>
+      <div class="np-context"><small>Playing from</small><strong id="npContext"></strong></div>
+      <div class="viz-switch" id="vizSwitch">
+        <button data-viz="bars">Bars</button><button data-viz="orb">Orb</button><button data-viz="wave">Wave</button>
+      </div>
+    </header>
+    <div class="np-stage">
+      <div class="np-art"><img id="npArt" alt="" /></div>
+      <div class="np-info">
+        <div class="np-titles">
+          <h1 id="npTitle"></h1>
+          <p id="npArtist"></p>
+        </div>
+        <button class="icon-btn like-btn lg" id="npLike" title="Like"><i data-icon="heart"></i></button>
+      </div>
+      <div class="progress-row np-progress">
+        <span class="time" id="npCur">0:00</span>
+        <div class="slider progress" id="npProgress" role="slider" aria-label="Seek" tabindex="0">
+          <div class="track"><div class="buffer"></div><div class="fill"></div></div>
+          <div class="thumb"></div>
+          <div class="hover-tip"></div>
+        </div>
+        <span class="time" id="npDur">0:00</span>
+      </div>
+      <div class="controls lg">
+        <button class="icon-btn" data-action="shuffle" title="Shuffle"><i data-icon="shuffle"></i></button>
+        <button class="icon-btn" data-action="prev" title="Previous"><i data-icon="prev"></i></button>
+        <button class="play-btn lg" data-action="toggle" title="Play"><i data-icon="play"></i></button>
+        <button class="icon-btn" data-action="next" title="Next"><i data-icon="next"></i></button>
+        <button class="icon-btn" data-action="repeat" title="Repeat"><i data-icon="repeat"></i></button>
+      </div>
+      <p class="np-next" id="npNext"></p>
+    </div>
+  </section>
+
+  <div id="palette" class="overlay" aria-hidden="true">
+    <div class="palette-box" role="dialog" aria-label="Command palette">
+      <div class="palette-input"><i data-icon="command"></i><input id="paletteInput" placeholder="Search songs, playlists or type a command…" autocomplete="off" /></div>
+      <div id="paletteList" class="palette-list"></div>
+      <div class="palette-foot"><span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>Enter</kbd> run</span><span><kbd>Shift</kbd>+<kbd>Enter</kbd> queue</span><span><kbd>Esc</kbd> close</span></div>
+    </div>
+  </div>
+
+  <div id="menu" class="ctx-menu" role="menu"></div>
+  <div id="modal" class="overlay" aria-hidden="true"><div class="modal-box"></div></div>
+  <div id="toasts" aria-live="polite"></div>
+  <div id="dropZone"><div><i data-icon="upload"></i><h2>Drop to add to your library</h2><p>MP3, WAV, OGG, M4A, FLAC — stored privately in this browser</p></div></div>
+
+  <script src="js/synth.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/visuals.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>
